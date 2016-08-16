@@ -10,41 +10,66 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import java.util.Arrays;
 import java.util.List;
 
 import pl.mobile.dynamicform.model.Field;
+import pl.mobile.dynamicform.model.FieldWrapper;
+import pl.mobile.dynamicform.presenter.FormPresenter;
 
 public class MainActivity extends AppCompatActivity {
 
+    FormPresenter formPresenter;
+
     LinearLayout paymentFormContainer;
+    /*
+        "type": "TEXT",
+                "name": "firstname",
+                "label": "Firstname",
+                "required": "True",
+                "max_len": "50",
+                "regex": "^[\\w\\d _\\-]{0,50}$"*/
+
+
+    Field field1 = new Field("TEXT","firstname","Firstname","True","5","^[\\w\\d _\\-]{0,5}$");
+    Field field2 = new Field("TEXT","lastname","Lastname","True","5","^[\\w\\d _\\-]{0,5}$");
+    Field field3 = new Field("CHECK","lastname","Aggrement","True","5","^[\\w\\d _\\-]{0,5}$");
+
+
+    FieldWrapper[] fields = {new FieldWrapper(field1),new FieldWrapper(field2),new FieldWrapper(field3)};
+    List<FieldWrapper>fieldList = Arrays.asList(fields);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        formPresenter = new FormPresenter();
+       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         paymentFormContainer = (LinearLayout) findViewById(R.id.container);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+        initPaymentTypeView(fieldList);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, fieldList.get(0).getUserInput(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
             }
         });
     }
 
+    private void initPaymentTypeView(List<FieldWrapper> fieldList) {
 
-
-    private void initPaymentTypeView(List<Field> fieldList) {
         FieldAdapter formAdapter = new FieldAdapter(new FieldInflater(this), this);
         populateField(fieldList, paymentFormContainer, formAdapter);
+
+
     }
 
-    private static void populateField(List<Field> fieldList, LinearLayout container, FieldAdapter adapter) {
-        for (Field field : fieldList) {
+    private static void populateField(List<FieldWrapper> fieldList, LinearLayout container, FieldAdapter adapter) {
+        for (FieldWrapper field : fieldList) {
             adapter.add(field);
         }
         for (int i = 0; i < adapter.getCount(); ++i) {

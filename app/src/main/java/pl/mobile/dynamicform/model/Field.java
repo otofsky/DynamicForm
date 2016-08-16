@@ -17,7 +17,7 @@ public class Field {
 
         private String type;
 
-        InputType(String type) {
+         InputType(String type) {
             this.type = type;
         }
 
@@ -28,6 +28,9 @@ public class Field {
         public void setType(String type) {
             this.type = type;
         }
+    }
+
+    public Field() {
     }
 
     private String type;
@@ -52,6 +55,17 @@ public class Field {
 
     private Collection<Choice> choices = new ArrayList<Choice>();
 
+    private  String userInput;
+
+
+    public Field(String type, String name, String label, String required, String max_len, String regex) {
+        this.type = type;
+        this.name = name;
+        this.label = label;
+        this.required = required;
+        this.max_len = max_len;
+        this.regex = regex;
+    }
 
     public String getType() {
         return type;
@@ -139,6 +153,14 @@ public class Field {
 
     public void setChoices(Collection<Choice> choices) {
         this.choices = choices;
+    }
+
+    public String getUserInput() {
+        return userInput;
+    }
+
+    public void setUserInput(String userInput) {
+        this.userInput = userInput;
     }
 
     @Override
