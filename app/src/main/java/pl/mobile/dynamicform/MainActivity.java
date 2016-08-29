@@ -2,22 +2,30 @@ package pl.mobile.dynamicform;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import pl.mobile.dynamicform.model.Field;
 import pl.mobile.dynamicform.model.FieldWrapper;
 import pl.mobile.dynamicform.presenter.FormPresenter;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String DEBUG_TAG = "Gestures";
+    private GestureDetectorCompat mDetector;
+    FieldAdapter formAdapter;
+    Map<Field, View> fieldsList = new LinkedHashMap<>();
 
     FormPresenter formPresenter;
 
@@ -31,20 +39,27 @@ public class MainActivity extends AppCompatActivity {
                 "regex": "^[\\w\\d _\\-]{0,50}$"*/
 
 
-    Field field1 = new Field("TEXT","firstname","Firstname","True","5","^[\\w\\d _\\-]{0,5}$");
-    Field field2 = new Field("TEXT","lastname","Lastname","True","5","^[\\w\\d _\\-]{0,5}$");
-    Field field3 = new Field("CHECK","lastname","Aggrement","True","5","^[\\w\\d _\\-]{0,5}$");
+    Field field1 = new Field("TEXT", "firstname", "Firstname", "True", "5", "^[\\w\\d _\\-]{0,5}$");
+    Field field2 = new Field("TEXT", "lastname", "Lastname", "True", "5", "^[\\w\\d _\\-]{0,5}$");
+    Field field3 = new Field("CHECK", "lastname", "Aggrement", "True", "5", "^[\\w\\d _\\-]{0,5}$");
 
 
-    FieldWrapper[] fields = {new FieldWrapper(field1),new FieldWrapper(field2),new FieldWrapper(field3)};
-    List<FieldWrapper>fieldList = Arrays.asList(fields);
+    FieldWrapper[] fields = {new FieldWrapper(field1), new FieldWrapper(field2), new FieldWrapper(field3)};
+    List<FieldWrapper> fieldList = Arrays.asList(fields);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("onClick", "onCreate");
+        // GestureDetector.OnGestureListener
+
+        // Set the gesture detector as the double tap
+        // listener.
+        Toast.makeText(getApplicationContext(), "msg", Toast.LENGTH_LONG).show();
+
         formPresenter = new FormPresenter();
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);,
         paymentFormContainer = (LinearLayout) findViewById(R.id.container);
         //setSupportActionBar(toolbar);
         initPaymentTypeView(fieldList);
@@ -53,27 +68,58 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, fieldList.get(0).getUserInput(), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
+                for (int x = 0; x < fieldList.size(); x++) {
+                    Field.InputType inputType = Field.InputType.TEXT;
+                    FieldWrapper fieldWrapper = fieldList.get(x);
+                    switch (inputType) {
+                        case TEXT:
+                            View v = paymentFormContainer.getChildAt(x);
+                            EditText editText = (EditText) v.findViewById(R.id.editText);
+                            editText.setError("Funcking error");
+                            Toast.makeText(getApplicationContext(), " entry : child count " + editText.getText().toString(), Toast.LENGTH_LONG).show();
+                            break;
+                        case SELECT:
+
+                            break;
+                        case CHECK:
+
+                            break;
+                        case EMAIL:
+
+                            break;
+
+                    }
+
+
+                }
+
+
+                for (Map.Entry<Field, View> entry : fieldsList.entrySet()) {
+                    Log.d(DEBUG_TAG, "onClick: key : " + entry.getKey() + " entry : " + entry.getValue());
+                    EditText inputEt = (EditText) entry.getValue().findViewById(R.id.editText);
+                    Toast.makeText(getApplicationContext(), " entry : " + inputEt.getText().toString(), Toast.LENGTH_LONG).show();
+
+
+                }
+                //     Toast.makeText(getApplicationContext(), "msg" , Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void initPaymentTypeView(List<FieldWrapper> fieldList) {
-
-        FieldAdapter formAdapter = new FieldAdapter(new FieldInflater(this), this);
+        formAdapter = new FieldAdapter(new FieldInflater(this), this);
         populateField(fieldList, paymentFormContainer, formAdapter);
-
-
     }
 
-    private static void populateField(List<FieldWrapper> fieldList, LinearLayout container, FieldAdapter adapter) {
+    private void populateField(List<FieldWrapper> fieldList, LinearLayout container, FieldAdapter adapter) {
         for (FieldWrapper field : fieldList) {
             adapter.add(field);
         }
         for (int i = 0; i < adapter.getCount(); ++i) {
+            fieldsList.put(fieldList.get(i), adapter.getView(i, null, null));
             container.addView(adapter.getView(i, null, null));
+
         }
     }
 
@@ -99,4 +145,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
