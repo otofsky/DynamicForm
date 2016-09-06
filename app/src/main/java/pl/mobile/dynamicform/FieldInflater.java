@@ -11,11 +11,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import pl.mobile.dynamicform.model.Field;
 import pl.mobile.dynamicform.model.FieldWrapper;
 
 
@@ -29,6 +27,7 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
     public FieldInflater(Context context) {
         inflater = LayoutInflater.from(context);
     }
+
     /*
             "type": "TEXT",
                     "name": "firstname",
@@ -40,10 +39,8 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
     public View getView(final FieldWrapper item, View convertView, int positionFlag) {
         final ViewHolder holder;
         if (convertView == null) {
-
             holder = new ViewHolder();
-            Field.InputType inputType = Field.InputType.TEXT;
-            switch (inputType) {
+            switch (item.parseInputType()) {
                 case TEXT:
                     convertView = inflater.inflate(R.layout.input_text_item, null);
                     holder.label = (TextView) convertView.findViewById(R.id.labelTv);
@@ -72,7 +69,7 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
         }
 
         holder.label.setText(item.getLabel());
-        holder.editText.addTextChangedListener(new DOTPAYTextWatcher(holder.editText) {
+      /*  holder.editText.addTextChangedListener(new DOTPAYTextWatcher(holder.editText) {
             @Override
             public void afterTextChanged(Editable s) {
 
@@ -85,7 +82,7 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
 
                 item.setUserInput(editText.getText().toString());
             }
-        });
+        });*/
 
 
         //holder.creditCardMask.setText(item.getCardNumber());
@@ -93,7 +90,7 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
     }
 
 
-    private void buildValidator(String regex, String input){
+    private void buildValidator(String regex, String input) {
 
     }
 
@@ -127,24 +124,24 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
         public ListView listView;
 
     }
+
     public class InputValidatorHelper {
-        public boolean isValidEmail(String string){
+        public boolean isValidEmail(String string) {
             final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
             Pattern pattern = Pattern.compile(EMAIL_PATTERN);
             Matcher matcher = pattern.matcher(string);
             return matcher.matches();
         }
 
-        public boolean isValidPassword(String string, boolean allowSpecialChars){
+        public boolean isValidPassword(String string, boolean allowSpecialChars) {
             String PATTERN;
-            if(allowSpecialChars){
+            if (allowSpecialChars) {
                 //PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
                 PATTERN = "^[a-zA-Z@#$%]\\w{5,19}$";
-            }else{
+            } else {
                 //PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})";
                 PATTERN = "^[a-zA-Z]\\w{5,19}$";
             }
-
 
 
             Pattern pattern = Pattern.compile(PATTERN);
@@ -152,11 +149,11 @@ public class FieldInflater implements GenericCustomListAdapter.ListItemInflater<
             return matcher.matches();
         }
 
-        public boolean isNullOrEmpty(String string){
+        public boolean isNullOrEmpty(String string) {
             return TextUtils.isEmpty(string);
         }
 
-        public boolean isNumeric(String string){
+        public boolean isNumeric(String string) {
             return TextUtils.isDigitsOnly(string);
         }
 

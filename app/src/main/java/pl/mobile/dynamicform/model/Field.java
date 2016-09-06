@@ -9,27 +9,6 @@ import java.util.Collection;
  */
 public class Field {
 
-    public enum InputType {
-        TEXT("TEXT"),
-        EMAIL("email"),
-        CHECK("CHECK"),
-        SELECT("SELECT");
-
-        private String type;
-
-         InputType(String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-    }
-
     public Field() {
     }
 
@@ -178,5 +157,48 @@ public class Field {
                 ", SELECT='" + select + '\'' +
                 ", choices=" + choices +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Field field = (Field) o;
+
+        if (type != null ? !type.equals(field.type) : field.type != null) return false;
+        if (name != null ? !name.equals(field.name) : field.name != null) return false;
+        if (label != null ? !label.equals(field.label) : field.label != null) return false;
+        if (required != null ? !required.equals(field.required) : field.required != null)
+            return false;
+        if (max_len != null ? !max_len.equals(field.max_len) : field.max_len != null) return false;
+        if (description_text != null ? !description_text.equals(field.description_text) : field.description_text != null)
+            return false;
+        if (description_html != null ? !description_html.equals(field.description_html) : field.description_html != null)
+            return false;
+        if (regex != null ? !regex.equals(field.regex) : field.regex != null) return false;
+        if (defaultValue != null ? !defaultValue.equals(field.defaultValue) : field.defaultValue != null)
+            return false;
+        if (select != null ? !select.equals(field.select) : field.select != null) return false;
+        if (choices != null ? !choices.equals(field.choices) : field.choices != null) return false;
+        return !(userInput != null ? !userInput.equals(field.userInput) : field.userInput != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (required != null ? required.hashCode() : 0);
+        result = 31 * result + (max_len != null ? max_len.hashCode() : 0);
+        result = 31 * result + (description_text != null ? description_text.hashCode() : 0);
+        result = 31 * result + (description_html != null ? description_html.hashCode() : 0);
+        result = 31 * result + (regex != null ? regex.hashCode() : 0);
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = 31 * result + (select != null ? select.hashCode() : 0);
+        result = 31 * result + (choices != null ? choices.hashCode() : 0);
+        result = 31 * result + (userInput != null ? userInput.hashCode() : 0);
+        return result;
     }
 }

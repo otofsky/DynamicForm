@@ -1,6 +1,7 @@
 package pl.mobile.dynamicform;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,13 @@ import pl.mobile.dynamicform.model.Field;
 import pl.mobile.dynamicform.model.FieldWrapper;
 import pl.mobile.dynamicform.presenter.FormPresenter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainMvpView {
     private static final String DEBUG_TAG = "Gestures";
     private GestureDetectorCompat mDetector;
     FieldAdapter formAdapter;
     Map<Field, View> fieldsList = new LinkedHashMap<>();
+
+    Map<Field, String> resultList = new LinkedHashMap<>();
 
     FormPresenter formPresenter;
 
@@ -64,20 +67,22 @@ public class MainActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         initPaymentTypeView(fieldList);
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 for (int x = 0; x < fieldList.size(); x++) {
-                    Field.InputType inputType = Field.InputType.TEXT;
+                    // Field.InputType inputType = Field.InputType.TEXT;
                     FieldWrapper fieldWrapper = fieldList.get(x);
-                    switch (inputType) {
+                    switch (fieldWrapper.parseInputType()) {
                         case TEXT:
                             View v = paymentFormContainer.getChildAt(x);
-                            EditText editText = (EditText) v.findViewById(R.id.editText);
-                            editText.setError("Funcking error");
-                            Toast.makeText(getApplicationContext(), " entry : child count " + editText.getText().toString(), Toast.LENGTH_LONG).show();
+                            EditText editText = getUserInput(fieldWrapper, v);
+                            validateText(fieldWrapper, editText);
+
+                            // resultList.put(inputType, editText.getText().toString());
                             break;
                         case SELECT:
 
@@ -88,24 +93,37 @@ public class MainActivity extends AppCompatActivity {
                         case EMAIL:
 
                             break;
-
                     }
-
-
                 }
 
-
-                for (Map.Entry<Field, View> entry : fieldsList.entrySet()) {
-                    Log.d(DEBUG_TAG, "onClick: key : " + entry.getKey() + " entry : " + entry.getValue());
-                    EditText inputEt = (EditText) entry.getValue().findViewById(R.id.editText);
-                    Toast.makeText(getApplicationContext(), " entry : " + inputEt.getText().toString(), Toast.LENGTH_LONG).show();
-
-
-                }
                 //     Toast.makeText(getApplicationContext(), "msg" , Toast.LENGTH_LONG).show();
             }
         });
     }
+
+    @NonNull
+    private EditText getUserInput(FieldWrapper fieldWrapper, View v) {
+        EditText editText = (EditText) v.findViewById(R.id.editText);
+        fieldWrapper.setUserInput(editText.getText().toString());
+        return editText;
+    }
+
+    private void validateText(FieldWrapper fieldWrapper, EditText editText) {
+        if (!formPresenter.validateFields(fieldWrapper)) {
+            editText.setError("Funcking error");
+        }
+    }
+
+    @Override
+    public void showRibotsEmpty() {
+
+    }
+
+    @Override
+    public void showErrorText() {
+
+    }
+
 
     private void initPaymentTypeView(List<FieldWrapper> fieldList) {
         formAdapter = new FieldAdapter(new FieldInflater(this), this);
@@ -145,6 +163,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }

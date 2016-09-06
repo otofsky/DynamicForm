@@ -2,6 +2,8 @@ package pl.mobile.dynamicform.model;
 
 import java.util.Collection;
 
+import pl.mobile.dynamicform.enums.InputType;
+
 /**
  * Created by zjuroszek on 16.08.16.
  */
@@ -14,151 +16,176 @@ public class FieldWrapper extends Field {
         this.field = field;
     }
 
+    public InputType parseInputType() {
+        if (getType().equalsIgnoreCase("TEXT")) {
+            return InputType.TEXT;
+        }
+        if (getType().equalsIgnoreCase("EMAIL")) {
+            return InputType.EMAIL;
+        }
+        if (getType().equalsIgnoreCase("CHECK")) {
+            return InputType.CHECK;
+        }
+        if (getType().equalsIgnoreCase("SELECT")) {
+            return InputType.SELECT;
+        }
+        throw new IllegalArgumentException("State string has invalid value");
+
+    }
+
+
     @Override
     public String getType() {
-        return super.getType();
+        return field.getType();
     }
 
     @Override
     public void setType(String type) {
-        super.setType(type);
+        field.setType(type);
     }
 
     @Override
     public String getName() {
-        return super.getName();
+        return field.getName();
     }
 
     @Override
     public void setName(String name) {
-        super.setName(name);
+        field.setName(name);
     }
 
     @Override
     public String getLabel() {
-        return super.getLabel();
+        return field.getLabel();
     }
 
     @Override
     public void setLabel(String label) {
-        super.setLabel(label);
+        field.setLabel(label);
     }
 
     @Override
     public String getRequired() {
-        return super.getRequired();
+        return field.getRequired();
     }
 
     @Override
     public void setRequired(String required) {
-        super.setRequired(required);
+        field.setRequired(required);
     }
 
     @Override
     public String getMax_len() {
-        return super.getMax_len();
+        return field.getMax_len();
     }
 
     @Override
     public void setMax_len(String max_len) {
-        super.setMax_len(max_len);
+        field.setMax_len(max_len);
     }
 
     @Override
     public String getDescription_text() {
-        return super.getDescription_text();
+        return field.getDescription_text();
     }
 
     @Override
     public void setDescription_text(String description_text) {
-        super.setDescription_text(description_text);
+        field.setDescription_text(description_text);
     }
 
     @Override
     public String getDescription_html() {
-        return super.getDescription_html();
+        return field.getDescription_html();
     }
 
     @Override
     public void setDescription_html(String description_html) {
-        super.setDescription_html(description_html);
+        field.setDescription_html(description_html);
     }
 
     @Override
     public String getRegex() {
-        return super.getRegex();
+        return field.getRegex();
     }
 
     @Override
     public void setRegex(String regex) {
-        super.setRegex(regex);
+        field.setRegex(regex);
     }
 
     @Override
     public String getDefaultValue() {
-        return super.getDefaultValue();
+        return field.getDefaultValue();
     }
 
     @Override
     public void setDefaultValue(String defaultValue) {
-        super.setDefaultValue(defaultValue);
+        field.setDefaultValue(defaultValue);
     }
 
     @Override
     public String getSelect() {
-        return super.getSelect();
+        return field.getSelect();
     }
 
     @Override
     public void setSelect(String select) {
-        super.setSelect(select);
+        field.setSelect(select);
     }
 
     @Override
     public Collection<Choice> getChoices() {
-        return super.getChoices();
+        return field.getChoices();
     }
 
     @Override
     public void setChoices(Collection<Choice> choices) {
-        super.setChoices(choices);
+        field.setChoices(choices);
     }
 
     @Override
     public String getUserInput() {
-        return super.getUserInput();
+        return field.getUserInput();
     }
 
     @Override
     public void setUserInput(String userInput) {
-        super.setUserInput(userInput);
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+        field.setUserInput(userInput);
     }
 
     @Override
     public String toString() {
-        return "FieldWrapper{" +
-                "userInput='" + userInput + '\'' +
-                ", field=" + field +
-                '}';
+        return field.toString();
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FieldWrapper that = (FieldWrapper) o;
+
+        if (userInput != null ? !userInput.equals(that.userInput) : that.userInput != null)
+            return false;
+        return !(field != null ? !field.equals(that.field) : that.field != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (userInput != null ? userInput.hashCode() : 0);
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
     }
 }
